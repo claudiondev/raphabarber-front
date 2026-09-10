@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion'; // Injetando animações premium
+import { motion } from 'framer-motion';
 import api from '../api';
+import { Monogram, Wordmark } from '../components/Brand';
 
 function Login() {
   const [email, setEmail] = useState('');
@@ -23,11 +24,7 @@ function Login() {
       localStorage.setItem('usuarioId', id);
       localStorage.setItem('usuarioRole', role);
 
-      if (role === 'ADMIN') {
-        navigate('/dashboard');
-      } else {
-        navigate('/agendamento');
-      }
+      navigate(role === 'ADMIN' ? '/dashboard' : '/agendamento');
     } catch {
       setErro('E-mail ou senha incorretos. Tente novamente.');
     } finally {
@@ -36,46 +33,36 @@ function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 flex flex-col items-center justify-center p-4">
-
-      {/* Logo / Marca com Link para Home */}
-      <motion.div 
-        initial={{ opacity: 0, y: -20 }}
+    <div className="min-h-screen bg-ink flex flex-col items-center justify-center p-4">
+      <motion.div
+        initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.5 }}
         className="mb-10 text-center"
       >
-        <Link to="/" className="inline-block group cursor-pointer">
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <span className="text-amber-500 text-3xl transition-transform group-hover:scale-120 group-hover:rotate-12">✂</span>
-            <h1 className="text-white text-2xl font-black tracking-widest uppercase">
-              Rapha<span className="text-amber-500">Barber</span>
-            </h1>
-          </div>
+        <Link to="/" className="inline-flex items-center gap-2.5 group">
+          <Monogram className="text-3xl text-brass-soft group-hover:text-brass transition-colors" />
+          <Wordmark className="text-bone text-sm" />
         </Link>
-        <p className="text-zinc-500 text-xs tracking-[0.25em] uppercase">
+        <p className="text-silver/70 text-[11px] font-condensed tracking-[0.25em] uppercase mt-2">
           Campina Grande · PB
         </p>
       </motion.div>
 
-      {/* Card */}
-      <motion.div 
-        initial={{ opacity: 0, scale: 0.95 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.4 }}
-        className="w-full max-w-sm bg-zinc-900 border border-zinc-800 rounded-2xl p-8 shadow-2xl"
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.1 }}
+        className="w-full max-w-sm bg-ink-soft border border-line p-8"
       >
-
         <div className="mb-7">
-          <h2 className="text-zinc-100 text-xl font-bold mb-1">Bem-vindo de volta</h2>
-          <p className="text-zinc-500 text-sm">Faça login para agendar seu horário</p>
+          <h1 className="font-serif text-2xl text-bone mb-1">Bem-vindo de volta</h1>
+          <p className="text-silver text-sm">Faça login para agendar seu horário</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-
-          {/* Email */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+            <label className="text-silver text-[11px] font-condensed font-medium uppercase tracking-[0.16em]">
               E-mail
             </label>
             <input
@@ -83,14 +70,13 @@ function Login() {
               placeholder="seu@email.com"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 text-zinc-100 text-sm rounded-xl px-4 py-3 outline-none focus:border-amber-500 transition-colors placeholder:text-zinc-600"
+              className="bg-ink border border-line text-bone text-sm px-4 py-3 outline-none focus:border-brass transition-colors placeholder:text-silver/40"
               required
             />
           </div>
 
-          {/* Senha */}
           <div className="flex flex-col gap-1.5">
-            <label className="text-zinc-400 text-xs font-semibold uppercase tracking-wider">
+            <label className="text-silver text-[11px] font-condensed font-medium uppercase tracking-[0.16em]">
               Senha
             </label>
             <input
@@ -98,60 +84,46 @@ function Login() {
               placeholder="••••••••"
               value={senha}
               onChange={(e) => setSenha(e.target.value)}
-              className="bg-zinc-950 border border-zinc-800 text-zinc-100 text-sm rounded-xl px-4 py-3 outline-none focus:border-amber-500 transition-colors placeholder:text-zinc-600"
+              className="bg-ink border border-line text-bone text-sm px-4 py-3 outline-none focus:border-brass transition-colors placeholder:text-silver/40"
               required
             />
           </div>
 
-          {/* Erro */}
           {erro && (
-            <motion.div 
-              initial={{ opacity: 0, x: -10 }}
+            <motion.p
+              initial={{ opacity: 0, x: -8 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3"
+              className="text-[#C97D6F] text-xs text-center border border-[#C97D6F]/25 bg-[#C97D6F]/10 px-4 py-3"
             >
-              <p className="text-red-400 text-xs text-center font-medium">{erro}</p>
-            </motion.div>
+              {erro}
+            </motion.p>
           )}
 
-          {/* Botão */}
-          <motion.button
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
+          <button
             type="submit"
             disabled={loading}
-            className="w-full bg-amber-500 hover:bg-amber-400 disabled:opacity-60 disabled:cursor-not-allowed text-zinc-950 font-black text-sm rounded-xl py-3.5 transition-all uppercase tracking-wider mt-2 shadow-lg shadow-amber-500/20"
+            className="w-full bg-brass hover:bg-brass-deep disabled:opacity-50 disabled:cursor-not-allowed text-ink font-condensed font-semibold text-[13px] py-3.5 uppercase tracking-[0.2em] transition-colors mt-2"
           >
             {loading ? 'Entrando...' : 'Entrar'}
-          </motion.button>
+          </button>
         </form>
 
-        {/* Rodapé do card */}
-        <div className="mt-6 pt-6 border-t border-zinc-800 text-center">
-          <p className="text-zinc-500 text-sm">
+        <div className="mt-6 pt-6 border-t border-line text-center">
+          <p className="text-silver text-sm">
             Não tem uma conta?{' '}
-            <Link
-              to="/cadastro"
-              className="text-amber-500 font-bold hover:text-amber-400 transition-colors"
-            >
+            <Link to="/cadastro" className="text-brass-soft font-medium hover:text-brass transition-colors">
               Cadastre-se
             </Link>
           </p>
         </div>
       </motion.div>
 
-      {/* Voltar para home */}
-      <motion.div
-        whileHover={{ x: -5 }}
-        transition={{ duration: 0.2 }}
+      <Link
+        to="/"
+        className="mt-6 text-silver/60 hover:text-silver text-[11px] font-condensed uppercase tracking-[0.18em] transition-colors"
       >
-        <Link
-          to="/"
-          className="mt-6 block text-zinc-600 hover:text-zinc-400 text-xs transition-colors uppercase tracking-wider"
-        >
-          ← Voltar ao início
-        </Link>
-      </motion.div>
+        ← Voltar ao início
+      </Link>
     </div>
   );
 }

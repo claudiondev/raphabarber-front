@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom'; // Importado o Link para o redirecionamento
-import { motion, AnimatePresence } from 'framer-motion'; // Adicionado para animações
+import { useNavigate, Link } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CalendarX } from 'lucide-react';
 import api from '../api';
+import { Monogram, Wordmark } from '../components/Brand';
 
 const STATUS_STYLES = {
-  AGENDADO: { label: 'Agendado', color: 'text-amber-500 bg-amber-500/10 border-amber-500/20' },
-  CONFIRMADO: { label: 'Confirmado', color: 'text-blue-400 bg-blue-400/10 border-blue-400/20' },
-  CONCLUIDO: { label: 'Concluído', color: 'text-green-400 bg-green-400/10 border-green-400/20' },
-  CANCELADO: { label: 'Cancelado', color: 'text-red-400 bg-red-400/10 border-red-400/20' },
+  AGENDADO: { label: 'Agendado', color: 'text-brass-soft border-brass/30' },
+  CONFIRMADO: { label: 'Confirmado', color: 'text-bone border-line' },
+  CONCLUIDO: { label: 'Concluído', color: 'text-[#8FA687] border-[#8FA687]/30' },
+  CANCELADO: { label: 'Cancelado', color: 'text-[#C97D6F] border-[#C97D6F]/30' },
 };
 
 function formatarData(dataHora) {
@@ -18,6 +20,10 @@ function formatarData(dataHora) {
 function formatarHora(dataHora) {
   const d = new Date(dataHora);
   return `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+}
+
+function formatarPreco(valor) {
+  return Number(valor).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 }
 
 function MeusAgendamentos() {
@@ -32,7 +38,6 @@ function MeusAgendamentos() {
       .finally(() => setLoading(false));
   }, []);
 
-  // Função para sair da conta
   const handleLogout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('usuarioId');
@@ -52,114 +57,92 @@ function MeusAgendamentos() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-zinc-100">
-
-      {/* HEADER */}
-      <header className="bg-zinc-900 border-b border-zinc-800 px-4 py-3">
+    <div className="min-h-screen bg-ink text-bone">
+      <header className="bg-ink-soft border-b border-line px-4 py-3.5">
         <div className="max-w-2xl mx-auto flex justify-between items-center">
-          
-          {/* Logo / Marca com Link para Home e efeito de Hover */}
-          <Link to="/" className="group flex items-center gap-2 cursor-pointer">
-            <span className="text-amber-500 text-xl font-black transition-transform group-hover:scale-120 group-hover:rotate-12">RB</span>
+          <Link to="/" className="group flex items-center gap-2.5">
+            <Monogram className="text-xl text-brass-soft group-hover:text-brass transition-colors" />
             <div>
-              <p className="text-white text-sm font-black tracking-widest uppercase">
-                Rapha<span className="text-amber-500">Barber</span>
-              </p>
-              <p className="text-zinc-500 text-xs">Meus Agendamentos</p>
+              <Wordmark className="text-bone text-xs" />
+              <p className="text-silver/70 text-[11px]">Meus agendamentos</p>
             </div>
           </Link>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-5">
             <button
               onClick={() => navigate('/')}
-              className="text-zinc-500 hover:text-zinc-300 text-xs uppercase tracking-wider transition-colors"
+              className="text-silver hover:text-bone text-[11px] font-condensed uppercase tracking-[0.18em] transition-colors"
             >
               ← Início
             </button>
-            {/* Botão de Sair adicionado conforme solicitado */}
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+            <button
               onClick={handleLogout}
-              className="bg-red-600/10 border border-red-600/20 text-red-500 text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg hover:bg-red-600 hover:text-white transition-all"
+              className="border border-[#C97D6F]/30 text-[#C97D6F] text-[10px] font-condensed font-medium uppercase tracking-[0.18em] px-3 py-1.5 hover:bg-[#C97D6F] hover:text-ink transition-colors"
             >
               Sair
-            </motion.button>
+            </button>
           </div>
         </div>
       </header>
 
-      <div className="max-w-2xl mx-auto px-4 py-8">
-
-        {/* Botão novo agendamento */}
-        <motion.button
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
+      <div className="max-w-2xl mx-auto px-4 py-10">
+        <button
           onClick={() => navigate('/agendamento')}
-          className="w-full bg-amber-500 hover:bg-amber-400 text-zinc-950 font-black text-sm rounded-2xl py-4 transition-all uppercase tracking-wider shadow-lg shadow-amber-500/20 mb-8"
+          className="w-full bg-brass hover:bg-brass-deep text-ink font-condensed font-semibold text-[13px] py-4 uppercase tracking-[0.2em] transition-colors mb-10"
         >
-          ✂ Novo Agendamento
-        </motion.button>
+          Novo agendamento
+        </button>
 
-        {/* Lista */}
         {loading ? (
-          <p className="text-zinc-600 text-sm animate-pulse text-center py-12">Carregando seus agendamentos...</p>
+          <p className="text-silver/60 text-sm text-center py-12">Carregando seus agendamentos...</p>
         ) : agendamentos.length === 0 ? (
-          <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-zinc-900 border border-zinc-800 rounded-2xl p-12 text-center"
-          >
-            <span className="text-5xl mb-4 block">✂</span>
-            <p className="text-zinc-400 font-bold mb-2">Nenhum agendamento ainda</p>
-            <p className="text-zinc-600 text-sm">Que tal marcar seu primeiro horário?</p>
-          </motion.div>
+          <div className="border border-line p-14 text-center">
+            <CalendarX className="mx-auto mb-4 text-silver/50" size={32} />
+            <p className="text-bone font-medium mb-2">Nenhum agendamento ainda</p>
+            <p className="text-silver text-sm">Que tal marcar seu primeiro horário?</p>
+          </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             <AnimatePresence>
               {agendamentos.map((a, index) => {
                 const status = STATUS_STYLES[a.status] || STATUS_STYLES.AGENDADO;
                 const podeCancel = a.status === 'AGENDADO' || a.status === 'CONFIRMADO';
 
                 return (
-                  <motion.div 
+                  <motion.div
                     key={a.id}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="bg-zinc-900 border border-zinc-800 rounded-2xl p-5"
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                    className="bg-ink-soft border border-line p-5"
                   >
-                    <div className="flex justify-between items-start mb-3">
+                    <div className="flex justify-between items-start mb-3 gap-3">
                       <div>
-                        <p className="text-white font-bold text-base">
+                        <p className="font-serif text-lg text-bone">
                           {a.servico?.nome || 'Serviço'}
                         </p>
-                        <p className="text-zinc-400 text-sm mt-0.5">
+                        <p className="text-silver text-sm mt-0.5">
                           {formatarData(a.dataHora)} às{' '}
-                          <span className="text-amber-500 font-bold">{formatarHora(a.dataHora)}</span>
+                          <span className="text-brass-soft font-medium">{formatarHora(a.dataHora)}</span>
                         </p>
                         {a.servico?.preco && (
-                          <p className="text-zinc-500 text-xs mt-1">
-                            R$ {Number(a.servico.preco).toFixed(2)}
+                          <p className="text-silver/60 text-xs mt-1">
+                            R$ {formatarPreco(a.servico.preco)}
                           </p>
                         )}
                       </div>
-                      <span className={`text-xs font-bold px-3 py-1 rounded-full border ${status.color}`}>
+                      <span className={`text-[10px] font-condensed font-medium uppercase tracking-wider px-2.5 py-1 border whitespace-nowrap ${status.color}`}>
                         {status.label}
                       </span>
                     </div>
 
                     {podeCancel && (
-                      <motion.button
-                        whileHover={{ scale: 1.01 }}
-                        whileTap={{ scale: 0.99 }}
+                      <button
                         onClick={() => handleCancelar(a.id)}
-                        className="w-full bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 rounded-xl py-2 text-xs font-bold uppercase tracking-wider transition-all mt-2"
+                        className="w-full border border-[#C97D6F]/25 text-[#C97D6F] hover:bg-[#C97D6F]/10 py-2 text-[11px] font-condensed font-medium uppercase tracking-[0.16em] transition-colors mt-3"
                       >
-                        Cancelar Agendamento
-                      </motion.button>
+                        Cancelar agendamento
+                      </button>
                     )}
                   </motion.div>
                 );
