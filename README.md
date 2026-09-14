@@ -24,8 +24,10 @@ Este é o front-end do **RaphaBarber**. A aplicação foi construída para autom
 
 ## ✨ Funcionalidades Principais
 
-- 🔐 **Painel Administrativo:** Controle total de agendamentos e serviços (Protegido por JWT).
+- 🔐 **Login e Cadastro:** Autenticação única para cliente e admin, com redirecionamento automático por perfil (`ADMIN` → painel, cliente → agendamento).
+- 🔐 **Painel Administrativo:** Controle total de agendamentos, serviços e portfólio (Protegido por JWT).
 - 📅 **Agendamento em Tempo Real:** Validação de horários e datas integrada ao backend Java.
+- 🗓️ **Meus Agendamentos:** Área do cliente logado para acompanhar o status e cancelar agendamentos.
 - 📱 **Totalmente Responsivo:** Experiência otimizada para o cliente agendar via celular ou tablet.
 - 🔄 **Consumo de API:** Comunicação segura com o backend Java Spring Boot via Axios.
 - 🎨 **Estilização Moderna:** Design contemporâneo com animações fluidas usando Framer Motion.
@@ -40,6 +42,8 @@ Este é o front-end do **RaphaBarber**. A aplicação foi construída para autom
 | **Tailwind CSS** | Framework de estilização utilitário para design Dark Mode |
 | **Framer Motion** | Biblioteca para animações e transições de tela fluidas |
 | **Axios** | Cliente HTTP para integração com a API REST |
+| **React Router DOM** | Roteamento das páginas e proteção de rotas privadas (AuthGuard) |
+| **Lucide React** | Ícones utilizados em toda a interface |
 | **Vite** | Ferramenta de build para alta performance em desenvolvimento |
 | **Vercel** | Plataforma de hospedagem do Front-end |
 
@@ -49,11 +53,12 @@ Este é o front-end do **RaphaBarber**. A aplicação foi construída para autom
 
 ### Pré-requisitos
 - Node.js instalado
+- Backend do RaphaBarber (Spring Boot) rodando, ou a URL de uma API já publicada
 
 ### Passos
 ```bash
 # Clone o repositório
-git clone [https://github.com/claudiondev/raphabarber-front](https://github.com/claudiondev/raphabarber-front)
+git clone https://github.com/claudiondev/raphabarber-front
 
 # Entre na pasta
 cd raphabarber-front
@@ -61,8 +66,14 @@ cd raphabarber-front
 # Instale as dependências
 npm install
 
+# Configure a URL da API (crie um arquivo .env na raiz)
+echo "VITE_API_URL=http://localhost:8080" > .env
+
 # Inicie o servidor de desenvolvimento
 npm run dev
+```
+
+> Sem o `VITE_API_URL`, a aplicação tenta acessar `http://localhost:8080` por padrão — é necessário ter o backend rodando nesse endereço ou apontar a variável para a API em produção.
 
 👨‍💻 Autor
 Claudio Nascimento
